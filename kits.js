@@ -69,3 +69,68 @@ kits.randomRGBColor = function () {
   let rgbColor = 'rgb(' + r + ',' + g + ',' + b + ')';
   return rgbColor;
 }
+// 从本地存储中读取复杂数据
+
+/**
+ * @description 从本地存储中读取复杂数据
+ * @param {string} 要以哪个键从本地存储中读取数据
+ * @returns {object} 读取出来的，镜JSON转换的复杂数据
+ */
+kits.getArray = kits.loadArrayFromLocalStorage = function (key) {
+  let json = localStorage.getItem(key);
+  let arr = JSON.parse(json);
+  return arr || [];
+}
+
+
+/**
+ * @description 封装好的把复杂数据存储到本地里面的方法，默认是存储json格式字符串
+ * @param {string} key 存储到本地里面的键
+ * @param {object} obj 要存储的复杂数据
+ * @returns undefined
+ */
+kits.setData = kits.saveArrayToLocalStorage = function (key,obj) {
+  let json = JSON.stringify(obj);
+  localStorage.setItem(key, json);
+}
+// 本地已经有 info: [{id:0,name:"aa"},{id:1,name:"aa"},{id:2,name:"aa"}]
+// aa= [23,45,67]  ==> 
+kits.appendDataIntoArray = function(key,data){
+  // 从本地数据里面获取key对应的数据
+  let arr = this.getArray(key);
+  // 在数组里面追加data
+  arr.unshift(data);
+  // 把追加好的数组追加回本地
+  this.setData(key,arr); // kits.setData(key,arr)
+
+}
+// var obj = {name:"haha"};
+//  console.log(obj.name)
+kits.modifyLocalDataById = function(key,id,data){
+   // 从本地数据里面获取key对应的数据
+   let arr = this.getArray(key);
+  //  console.log(arr[1])
+   for(i = 0; i < arr.length; i++){
+    //  console.log(arr[i])
+    // console.log(arr[i].id)
+    if(arr[i].id == id){
+      arr[i] = data;
+    }
+   }
+
+   this.setData(key,arr); // kits.setData(key,arr)
+}
+
+
+kits.deleteLocalDataById = function(key,id){
+   // 从本地数据里面获取key对应的数据
+   let arr = this.getArray(key);
+   for(i = 0; i < arr.length; i++){
+     if(arr[i].id == id){
+       arr[i] = id;  
+     }
+     this.remove(key,arr);
+   }
+   
+}
+
